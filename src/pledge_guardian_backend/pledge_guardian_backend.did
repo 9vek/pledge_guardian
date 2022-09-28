@@ -1,0 +1,16 @@
+type Pledge = record {
+    "description": text;
+    "display_name": text;
+};
+
+type PledgeWithId = record {
+    "identity": principal;
+    "time": text;
+    "description": text;
+    "display_name": text;
+};
+
+service : {
+    "get_all": () -> (vec PledgeWithId) query;
+    "update": (Pledge) -> ();
+}

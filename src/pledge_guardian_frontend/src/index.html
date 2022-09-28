@@ -1,0 +1,28 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width" />
+  <title>pledge_guardian</title>
+  <base href="/" />
+  <link rel="icon" href="favicon.ico" />
+</head>
+
+<body class="bg-stone-800 px-1 select-none">
+  <div class="container max-w-xl mx-auto my-16">
+    <div class="font-bold text-white text-2xl">
+      Pledge Guardian
+    </div>
+    <hr class="bg-stone-200 mt-4" />
+    <div class="py-4 grid grid-cols-4 space-x-2 space-y-2">
+      <textarea id="newPledgeDescription" class="bg-stone-700 col-span-3 row-span-2 rounded-md text-white p-1 mt-2 outline-none"></textarea>
+      <input id="newPledgeDisplayName" class="bg-stone-700 text-center text-white rounded-md p-1 outline-none" type="text">
+      <button id="newPledgeSubmit" class="bg-lime-600 p-1 rounded-md text-white text-xs" type="submit">Add</button>
+    </div>
+    <div id="pledges">
+    </div>
+  </div>
+</body>
+
+</html>
