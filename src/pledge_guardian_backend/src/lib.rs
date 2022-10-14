@@ -32,7 +32,7 @@ static PLEDGE_SET: RefCell<PledgeSet> = RefCell::default();
 
 // update records
 #[update]
-fn update(pledge: Pledge) {
+fn update(pledge: Pledge) -> PledgeWithId {
     let identity = ic_cdk::api::caller();
     let pledge_with_id = PledgeWithId { 
         identity, 
@@ -41,18 +41,23 @@ fn update(pledge: Pledge) {
         time: time().to_string()
     };
     PLEDGE_SET.with(|pledge_set| {
-        pledge_set.borrow_mut().push(pledge_with_id);
+        pledge_set.borrow_mut().push(pledge_with_id.clone());
     });
+    pledge_with_id
 }
 
 // get record related to current principal
-#[query(name = "get_all")]
-fn get_all() -> Vec<PledgeWithId> {
-    let mut pledges: Vec<PledgeWithId> = vec![];
+#[query(name = "get_pledge_list")]
+fn get_pledge_list(start: u64, size: u64) -> Vec<PledgeWithId> {
+    let start = start as usize;
+    let mut size = size as usize;
     PLEDGE_SET.with(|pledge_set| {
-        pledges = pledge_set
-            .borrow()
-            .clone();
-    });
-    pledges
+        let pledge_list = pledge_set.borrow();
+        let limit = pledge_list.len();
+
+        if limit == 0 || size == 0 { return vec![] }
+        if start > limit { return vec![] }
+        if start + size > limit { size = limit - start; }
+        pledge_list[start..start+size].to_vec()
+    })
 }

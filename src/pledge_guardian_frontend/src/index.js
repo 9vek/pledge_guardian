@@ -12,17 +12,44 @@ const colorPool = [
   "purple", // bg-purple-900 hover:bg-purple-800
 ]
 
-window.onload = async () => {
-  let pledges = await pledge_guardian_backend.get_all()
+let startPointer = 0
 
-  const pledgesDiv = document.querySelector("#pledges")
+const pledgeList = document.querySelector("#pledgeList")
+const newPledgeDescriptionBox = document.querySelector("#newPledgeDescription")
+const newPledgeDisplayNameBox = document.querySelector("#newPledgeDisplayName")
+const newPledgeSubmitButton = document.querySelector("#newPledgeSubmit")
+const loadMoreButton = document.querySelector("#loadMoreButton")
+
+window.onload = async () => {
+  const pledges = await fetchPledgeList(0, 5)
+  renderNewPledges(pledges)
+}
+
+async function fetchPledgeList(start, size) {
+  startPointer = start + size
+  let pledges = await pledge_guardian_backend.get_pledge_list(start, size)
+  pledges.sort((p1, p2) => {
+    if (p1.time > p2.time) {
+      return -1
+    } else if (p1.time == p2.time) {
+      return 0
+    } else {
+      return 1
+    }
+  })
+  return pledges
+}
+
+
+function renderNewPledges(pledges, clean=false) {
+  if (clean) pledgeList.innerHTML = ''
   pledges.forEach((pledge) => {
     let colorIndex = 0
     for (let i = 0; i < pledge.display_name.length; i++) {
       colorIndex += pledge.display_name.charCodeAt(i)
     }
     colorIndex = colorIndex % 8
-    pledgesDiv.innerHTML += `
+    pledgeList.innerHTML += `
     <div class="text-white bg-${colorPool[colorIndex]}-900 rounded-lg p-4 mb-12 mt-8 hover:shadow-xl hover:bg-${colorPool[colorIndex]}-800 transition-all">
       <div>${pledge.description}</div>
       <hr/ class="my-1 bg-stone-500">
@@ -34,4 +61,23 @@ window.onload = async () => {
     </div>
     `
   })
+}
+
+async function submitNewPledge() {
+  const newPledgeDescription = newPledgeDescriptionBox.value;
+  const newPledgeDisplayName = newPledgeDisplayNameBox.value;
+  const pledge = await pledge_guardian_backend.update({
+    description: newPledgeDescription,
+    display_name: newPledgeDisplayName
+  })
+  const pledges = [pledge]
+  renderNewPledges(pledges, false)
+}
+
+newPledgeSubmitButton.onclick = submitNewPledge
+
+loadMoreButton.onclick = async () => {
+  const start = startPointer
+  const pledges = await fetchPledgeList(start, 5)
+  renderNewPledges(pledges)
 }
