@@ -47,7 +47,7 @@ module.exports = {
   entry: {
     // The frontend.entrypoint points to the HTML file for this build, so we need
     // to replace the extension to `.js`.
-    index: path.join(__dirname, frontend_entry).replace(/\.html$/, ".js"),
+    index: path.join(__dirname, "src", frontendDirectory, "src", "App.jsx"),
   },
   devtool: isDevelopment ? "source-map" : false,
   optimization: {
@@ -77,21 +77,25 @@ module.exports = {
   module: {
     rules: [
       {
-          test: /\.js$/i,
-          include: path.resolve(__dirname, 'src'),
-          use: {
-              loader: 'babel-loader',
-              options: {
-                  presets: ['@babel/preset-env'],
-              },
+        test: /\.js$/i,
+        include: path.resolve(__dirname, 'src'),
+        use: {
+          loader: 'babel-loader',
+          options: {
+            presets: ['@babel/preset-env', '@babel/preset-react'],
           },
+        },
       },
       {
-          test: /\.css$/i,
-          include: path.resolve(__dirname, 'src'),
-          use: ['style-loader', 'css-loader', 'postcss-loader'],
+        test: /\.css$/i,
+        include: path.resolve(__dirname, 'src'),
+        use: ['style-loader', 'css-loader', 'postcss-loader'],
       },
-  ],
+      {
+        test: /\.(js|ts)x?$/,
+        loader: "ts-loader"
+      }
+    ],
   },
   plugins: [
     new HtmlWebpackPlugin({

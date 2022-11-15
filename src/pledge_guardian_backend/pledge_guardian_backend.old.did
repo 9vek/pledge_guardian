@@ -12,5 +12,5 @@ type PledgeWithId = record {
 
 service : {
     "get_pledge_list": (start: nat64, size: nat64) -> (vec PledgeWithId) query;
-    "update": (Pledge) -> ();
+    "update": (Pledge) -> (PledgeWithId);
 }
