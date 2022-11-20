@@ -1,5 +1,17 @@
 {
   "canisters": {
+    "internet_identity": {
+      "type": "custom",
+      "candid": "internet_identity.did",
+      "wasm": "internet_identity.wasm",
+      "build": "bash -c 'test -f internet_identity.wasm || curl -sSL https://github.com/dfinity/internet-identity/releases/latest/download/internet_identity_dev.wasm -o internet_identity.wasm; test -f internet_identity.did || curl -sSL https://raw.githubusercontent.com/dfinity/internet-identity/main/src/internet_identity/internet_identity.did -o internet_identity.did'",
+      "remote": {
+        "candid": "internet_identity.did",
+        "id": {
+          "ic": "rdmx6-jaaaa-aaaaa-aaadq-cai"
+        }
+      }
+    },
     "pledge_guardian_backend": {
       "candid": "src/pledge_guardian_backend/pledge_guardian_backend.did",
       "package": "pledge_guardian_backend",
@@ -7,7 +19,7 @@
     },
     "pledge_guardian_frontend": {
       "dependencies": [
-        "pledge_guardian_backend"
+        "pledge_guardian_backend", "internet_identity"
       ],
       "frontend": {
         "entrypoint": "src/pledge_guardian_frontend/src/index.html"
@@ -28,7 +40,7 @@
   "dfx": "0.11.2",
   "networks": {
     "local": {
-      "bind": "127.0.0.1:8000",
+      "bind": "127.0.0.1:16383",
       "type": "ephemeral"
     }
   },
